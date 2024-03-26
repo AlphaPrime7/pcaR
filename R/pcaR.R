@@ -8,8 +8,9 @@ data(package = .packages(all.available = TRUE))
 data(CASchools, package = 'AER')
 
 #x must be numeric
-cas_num = CASchools[,5:7]
-cas_num = scale(CASchools[,5:7]) #normalize
+cas_num = CASchools[,12:14]
+cas_num = scale(CASchools[,12:14]) #normalize
+head(cas_num)
 
 #change the data set
 my_pca = stats::prcomp(cas_num, scale = TRUE)
@@ -46,8 +47,17 @@ fviz_pca_ind(my_pca,
 
 #aggregate results
 stats::aggregate(cas_num, by=list(cluster=my_kmeans$cluster), mean)
-cas <- cbind(CASchools, cluster = my_kmeans$cluster)
+cas <- cbind(CASchools, cluster_subject = my_kmeans$cluster)
 head(cas)
+
+#save the new data set for further analysis
+save(cas, file = "CASchools.Rdata")
+saveRDS(cas, file = "CASchools.Rds")
+write.table(cas, file = "CASchools.csv",
+            sep = ",", row.names = F)
+#load data
+load(file = "CASchools.Rdata")
+CASchools = readRDS(file = "CASchools.Rds")
 
 #Cons
 #sensitive to outliers
